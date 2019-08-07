@@ -1,0 +1,91 @@
+
+  obstacleCollisionDetected(position) {
+    let result = false;
+    for (let i = 0; i < this.OBSTACLE_NUMBER; i += 1) {
+      if (this.obstacles[i].collision(position)) { result = true; }
+    }
+    return result;
+  }
+
+  agentCollisionDetected(position) {
+    let result = false;
+    for (let i = 0; i < this.AGENT_NUMBER; i += 1) {
+      if (this.agents[i].collision(position)) { result = true; }
+    }
+    return result;
+  }
+
+  /*
+   * Evade collision with obstacles and
+   * choose side of the obstacle which
+   * requires less direction change
+   */
+  avoidObstacles(agent) {
+    let result = false;
+    let j = 1.0;
+    let direction = agent.get_direction();
+    let new_pos = agent.predict_direction(this.canvas);
+    while (this.obstacleCollisionDetected(new_pos) && (j <= 8)) {
+      result = true
+      let angle = Math.PI / 8.0 * j;
+      agent.set_direction(direction - angle);
+      new_pos = agent.predict_direction(this.canvas);
+      if (!this.obstacleCollisionDetected(new_pos)) break;
+
+      agent.set_direction(direction + angle);
+      new_pos = agent.predict_direction(this.canvas);
+      j += 1.0
+    }
+    return result;
+  }
+
+  avoidOtherAgents(agent) {
+    let result = false;
+    let j = 1.0;
+    let direction = agent.get_direction();
+    let new_pos = agent.predict_direction(this.canvas);
+    while (this.agentCollisionDetected(new_pos) && (j <= 8)) {
+      result = true
+      let angle = Math.PI / 8.0 * j;
+      agent.set_direction(direction - angle);
+      new_pos = agent.predict_direction(this.canvas);
+      if (!this.agentCollisionDetected(new_pos)) break;
+
+      agent.set_direction(direction + angle);
+      new_pos = agent.predict_direction(this.canvas);
+      j += 1.0
+    }
+    return result;
+  }
+
+  stick_to_flock(agent, highlight) {
+    // Get average heading of flock mates
+    let flock_mates = this.agents.filter((mate) => (mate.pos.distance(agent.pos) < 200));
+    const calc_avg = arr => arr.reduce((a,b) => a + b, 0) / arr.length;
+
+    // Get direction of flock mates
+    let flock_speed = new Vector();
+    flock_speed.x = calc_avg(flock_mates.map((o) => o.speed.x));
+    flock_speed.y = calc_avg(flock_mates.map((o) => o.speed.y));
+
+    // Get center of flock mates
+    let flock_center = new Point();
+    flock_center.x = calc_avg(flock_mates.map((o) => o.pos.x));
+    flock_center.y = calc_avg(flock_mates.map((o) => o.pos.y));
+
+    let angle = flock_speed.angle() - agent.speed.angle();
+    let velocity = flock_speed.length() - agent.speed.length();
+
+    if (angle > 0) {
+      // Move in same direction as other flock mates
+      agent.change_direction(angle/10);
+      // agent.change_speed(velocity/10);
+    } else {
+      // // move towards center of flock mates
+      // let vector_to_center = new Point();
+      // vector_to_center.x = flock_center.x - agent.pos.x;
+      // vector_to_center.y = flock_center.y - agent.pos.y;
+      // agent.pos.x += vector_to_center.x > 0 ? 0.5 : -0.5
+      // agent.pos.y += vector_to_center.y > 0 ? 0.5 : -0.5
+    }
+  }
