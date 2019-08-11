@@ -4,12 +4,14 @@
     <meta charset="utf-8"/>
     <title>Boids Simulation</title>
     <script type="module">
-      import { initCanvas } from '/index.js';
+      import { initCanvas } from './src/app.js';
       window.initCanvas = initCanvas
     </script>
     <link rel="stylesheet" type="text/css" href="page.css">
   </head>
   <body onload="initCanvas()">
     <canvas id="canvas""></canvas>
+
+    <script src="dist/main.js"></script>
   </body>
 </html>

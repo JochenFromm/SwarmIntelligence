@@ -1,0 +1,26 @@
+{
+  "name": "swarmintelligence",
+  "version": "1.0.0",
+  "description": "Swarm intelligence examples in Javascript",
+  "main": "webpack.config.js",
+  "dependencies": {
+    "webpack": "^4.39.1"
+  },
+  "devDependencies": {
+    "webpack-cli": "^3.3.6"
+  },
+  "scripts": {
+    "start": "npm run webpack",
+    "webpack": "webpack -d --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JochenFromm/SwarmIntelligence.git"
+  },
+  "author": "Jochen Fromm",
+  "license": "CC BY-SA",
+  "bugs": {
+    "url": "https://github.com/JochenFromm/SwarmIntelligence/issues"
+  },
+  "homepage": "https://github.com/JochenFromm/SwarmIntelligence#readme"
+}

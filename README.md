@@ -5,6 +5,8 @@ Swarm intelligence examples in Javascript
 
 [Overview](https://github.com/JochenFromm/SwarmIntelligence/blob/master/index.html)
 
+Uses [Webpack](https://github.com/webpack/webpack) and NPM
+
 ## Links
 
 Original Boids page from Craig Reynolds

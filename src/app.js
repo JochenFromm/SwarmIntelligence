@@ -1,5 +1,5 @@
 
-import { Flock } from '/flock.js';
+import { Flock } from './flock.js';
 
 var initCanvas = () => {
   let page = new Flock("canvas");
