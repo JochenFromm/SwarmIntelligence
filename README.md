@@ -3,9 +3,9 @@
 
 Swarm intelligence examples in Javascript
 
-[Overview](https://github.com/JochenFromm/SwarmIntelligence/blob/master/index.html)
+Live demo on [GitHub Pages](https://jochenfromm.github.io/SwarmIntelligence/)
 
-Uses [Webpack](https://github.com/webpack/webpack) and NPM
+Uses [Webpack](https://github.com/webpack/webpack)
 
 ## Links
 
