@@ -14,20 +14,53 @@ const MAX_SPEED = 3.0;
  * Main class for boids flock
  */
 class Flock {
-  constructor(canvasId) {
-    this.AGENT_NUMBER = 50;
-    this.OBSTACLE_NUMBER = 10;
+  constructor(canvasId, agentNumber, obstacleNumber, halftime, teaching_time) {
     this.setCanvasSize(canvasId);
 
-    this.agents = [];
-    this.obstacles = [];
+    this.createNewObstacles(obstacleNumber);
+    this.createNewAgents(agentNumber);
 
-    for (let i = 0; i < this.OBSTACLE_NUMBER; i += 1) {
-      this.obstacles.push(this.createObstacle());
+    this.setHalftime(halftime);
+    this.setTeachingTime(teaching_time);
+
+    this.FLOCK_SIZE = 150;
+    this.SIMULATION_BREAK = false;
+  }
+
+  reset() {
+    this.createNewObstacles(this.OBSTACLE_NUMBER);
+    this.createNewAgents(this.AGENT_NUMBER);
+    this.setHalftime(this.HALFTIME);
+    this.setTeachingTime(this.TEACHING_TIME);
+  }
+
+  setHalftime(value) {
+    this.HALFTIME = value;
+    for (let i = 0; i < this.AGENT_NUMBER; i += 1) {
+      this.agents[i].HALFTIME = value;
     }
+  }
 
+  setTeachingTime(value) {
+    this.TEACHING_TIME = value;
+    for (let i = 0; i < this.AGENT_NUMBER; i += 1) {
+      this.agents[i].TEACHING_TIME = value;
+    }
+  }
+
+  createNewAgents(value) {
+    this.AGENT_NUMBER = value;
+    this.agents = [];
     for (let i = 0; i < this.AGENT_NUMBER; i += 1) {
       this.agents.push(this.createAgent());
+    }
+  }
+
+  createNewObstacles(value) {
+    this.OBSTACLE_NUMBER = value;
+    this.obstacles = [];
+    for (let i = 0; i < this.OBSTACLE_NUMBER; i += 1) {
+      this.obstacles.push(this.createObstacle());
     }
   }
 
@@ -35,7 +68,7 @@ class Flock {
     this.canvas = document.getElementById(canvasId);
     this.context = this.canvas.getContext("2d");
     this.context.canvas.width = window.innerWidth;
-    this.context.canvas.height = window.innerHeight;
+    this.context.canvas.height = window.innerHeight-80;
   }
 
   createAgent() {
@@ -49,9 +82,9 @@ class Flock {
   createObstacle() {
     let size = 1;
     if (window.innerWidth > window.innerHeight) {
-      size = window.innerWidth/50
+      size = window.innerWidth/70
     } else {
-      size = window.innerHeight/50;
+      size = window.innerHeight/70;
     }
     let point = this.randomPos(this.canvas.width, this.canvas.height);
     let r = (size/2) + Math.random()*(size);
@@ -95,7 +128,7 @@ class Flock {
     collidingObstacles.forEach((i) => {
       let pos = this.obstacles[i].pos.subtract(agent.pos);
       let direction = new Vector(-pos.x, -pos.y);
-      agent.steer(direction, MAX_FORCE);
+      agent.steer(direction, MAX_FORCE*2);
     })
   }
 
@@ -110,14 +143,14 @@ class Flock {
 
   alignToOtherAgents(agent) {
     // Get flock mates
-    let flock_mates = this.agents.filter((mate) => (mate.pos.distance(agent.pos) < 200));
+    let flock_mates = this.agents.filter((mate) => (mate.pos.distance(agent.pos) < this.FLOCK_SIZE));
 
     // Get velocity (=direction) of flock mates
     let flock_direction = new Vector();
     flock_direction.x = calc_avg(flock_mates.map((o) => o.speed.x));
     flock_direction.y = calc_avg(flock_mates.map((o) => o.speed.y));
     flock_direction.normalize(MIN_SPEED);
-    agent.steer(flock_direction, MAX_FORCE);
+    agent.steer(flock_direction, MAX_FORCE * agent.oblivionFactor());
   }
 
   centerOfFlock(flock_mates) {
@@ -129,7 +162,7 @@ class Flock {
 
   highlightFlock(flock_center) {
     this.context.beginPath();
-    this.context.arc(flock_center.x, flock_center.y, 200, 0, Math.PI*2);
+    this.context.arc(flock_center.x, flock_center.y, this.FLOCK_SIZE, 0, Math.PI*2);
     this.context.fillStyle = 'rgba(200, 200, 200, 0.2)';
     this.context.fill();
     this.context.closePath();
@@ -137,7 +170,7 @@ class Flock {
 
   stickToFlock(agent) {
     // Get flock mates and their center
-    let flock_mates = this.agents.filter((mate) => (mate.pos.distance(agent.pos) < 200));
+    let flock_mates = this.agents.filter((mate) => (mate.pos.distance(agent.pos) < this.FLOCK_SIZE));
     let flock_center = this.centerOfFlock(flock_mates);
 
     // Highlight flock size
@@ -152,7 +185,7 @@ class Flock {
     let steering = agent.getSteering(direction, MAX_SPEED, MAX_FORCE)
     let course = agent.predict_position(this.canvas, agent.speed.add(steering), MAX_SPEED);
     if (this.agentCollisions(agent, course).length === 0) {
-      agent.steer(direction, MAX_FORCE);
+      agent.steer(direction, MAX_FORCE * agent.oblivionFactor());
     }
   }
 
@@ -165,10 +198,10 @@ class Flock {
     // Cohesion rule
     this.stickToFlock(agent);
 
-    // Separation rule obstacles
+    // Separation rule agents
     this.avoidOtherAgents(agent);
 
-    // Separation rule agents
+    // Separation rule obstacles
     this.avoidObstacles(agent);
 
     agent.applySteering();
@@ -178,6 +211,8 @@ class Flock {
 
   tick() {
     if (!this.context) { return; }
+    if (this.SIMULATION_BREAK) { return; }
+
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     for (let i = 0; i < this.OBSTACLE_NUMBER; i += 1) {
@@ -189,6 +224,13 @@ class Flock {
       agent.draw(this.context, agent.highlight);
       this.move(agent);
     }
+
+    console.log(
+      "timestep", this.agents[0].timestep,
+      "teaching interval", this.agents[0].TEACHING_TIME,
+      "oblivion", this.agents[0].oblivionFactor(),
+      "halftime interval", this.agents[0].HALFTIME
+    );
   }
 }
 

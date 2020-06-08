@@ -7,7 +7,12 @@ class Agent {
     this.pos = new Point(x,y);
     this.speed = new Vector(dx,dy);
     this.steering = new Vector(0,0);
+    this.timestep = 0;
 
+    this.HALFTIME = 140;
+    this.TEACHING_TIME = 70;
+
+    this.SIZE = 2;
     this.PERSONAL_SPACE = 20;
     this.highlight = false;
   }
@@ -30,13 +35,16 @@ class Agent {
     return result;
   }
 
+  oblivionFactor() {
+    return Math.pow(2, - this.timestep / this.HALFTIME);
+  }
+
   /*
    * Calculate steering vector according to Craig Reynolds
    * steering = desired_velocity - velocity
    */
   steer(desired_direction, MAX_FORCE) {
     let result = desired_direction.subtract(this.speed);
-
     result.normalize(MAX_FORCE);
     this.steering = this.steering.add(result);
   }
@@ -80,6 +88,7 @@ class Agent {
   wrap(canvas, pos) {
     if (pos.x > canvas.width) { pos.x = 0 }
     if (pos.y > canvas.height) { pos.y = 0 }
+    if (pos.x < 0) { pos.x = canvas.width }
     if (pos.y < 0) { pos.y = canvas.height }
     return pos;
   }
@@ -98,11 +107,16 @@ class Agent {
     this.pos.x += this.speed.x;
     this.pos.y += this.speed.y;
     this.wrap(canvas, this.pos);
+    this.timestep += 1;
+
+    if (this.timestep > this.TEACHING_TIME) {
+      this.timestep = 0;
+    }
   }
 
   draw(context, highlight = false) {
     context.beginPath();
-    context.arc(this.pos.x, this.pos.y, 5, 0, Math.PI*2);
+    context.arc(this.pos.x, this.pos.y, this.SIZE, 0, Math.PI*2);
     context.fillStyle = "#0095DD";
     if (this.highlight || highlight) context.fillStyle = "#DD9500";
     context.fill();

@@ -4,14 +4,36 @@
     <meta charset="utf-8"/>
     <title>Boids Simulation</title>
     <script type="module">
-      import { initCanvas } from './src/app.js';
+      import {
+        initCanvas, setAgents, setObstacles, setHalftime, setTeachingTime
+      } from './src/app.js';
       window.initCanvas = initCanvas
+      window.setAgents = setAgents
+      window.setObstacles = setObstacles
+      window.setHalftime = setHalftime
+      window.setTeachingTime = setTeachingTime
     </script>
     <link rel="stylesheet" type="text/css" href="page.css">
   </head>
-  <body onload="initCanvas()">
+  <body onload="initCanvas(20,50,250,250)">
     <canvas id="canvas""></canvas>
 
+    <div class="controlPanel">
+      <input type="range" id=agentSlider min="10" max="150" value=20 onInput="setAgents(this.value);" class="slider" >
+      <br /> Number of agents
+    </div>
+    <div class="controlPanel">
+      <input type="range" id=obstacleSlider min="10" max="150" value=50 onInput="setObstacles(this.value);" class="slider" >
+      <br /> Number of obstacles
+    </div>
+    <div class="controlPanel">
+      <input type="range" id=oblivionSlider min="10" max="1000" step=10 value=250 onInput="setHalftime(this.value);" class="slider" >
+      <br /> Oblivion Half Time
+    </div>
+    <div class="controlPanel">
+      <input type="range" id=teachingSlider min="10" max="1000" step=10 value=250 onInput="setTeachingTime(this.value);" class="slider" >
+      <br /> Teaching Time
+    </div>
     <script src="dist/main.js"></script>
   </body>
 </html>
