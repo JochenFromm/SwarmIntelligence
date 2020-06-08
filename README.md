@@ -9,6 +9,7 @@ Uses [Webpack](https://github.com/webpack/webpack)
 
 For local development use webserver like Nginx.
 Compile webpack with "npx webpack" for deployment.
+Deploy with "npm run deploy".
 
 
 ## Links
