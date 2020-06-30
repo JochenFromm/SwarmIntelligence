@@ -14,7 +14,7 @@ const MAX_SPEED = 3.0;
  * Main class for boids flock
  */
 class Flock {
-  constructor(canvasId, agentNumber, obstacleNumber, halftime, teaching_time) {
+  constructor(canvasId, agentNumber, obstacleNumber, halftime, teaching_time, fear) {
     this.setCanvasSize(canvasId);
 
     this.createNewObstacles(obstacleNumber);
@@ -22,6 +22,7 @@ class Flock {
 
     this.setHalftime(halftime);
     this.setTeachingTime(teaching_time);
+    this.setFearfulness(fear);
 
     this.FLOCK_SIZE = 150;
     this.SIMULATION_BREAK = false;
@@ -32,6 +33,7 @@ class Flock {
     this.createNewAgents(this.AGENT_NUMBER);
     this.setHalftime(this.HALFTIME);
     this.setTeachingTime(this.TEACHING_TIME);
+    this.setFearfulness(this.FEARFULNESS);
   }
 
   setHalftime(value) {
@@ -45,6 +47,13 @@ class Flock {
     this.TEACHING_TIME = value;
     for (let i = 0; i < this.AGENT_NUMBER; i += 1) {
       this.agents[i].TEACHING_TIME = value;
+    }
+  }
+
+  setFearfulness(value) {
+    this.FEARFULNESS = value;
+    for (let i = 0; i < this.AGENT_NUMBER; i += 1) {
+      this.agents[i].FEARFULNESS = value;
     }
   }
 
@@ -150,7 +159,7 @@ class Flock {
     flock_direction.x = calc_avg(flock_mates.map((o) => o.speed.x));
     flock_direction.y = calc_avg(flock_mates.map((o) => o.speed.y));
     flock_direction.normalize(MIN_SPEED);
-    agent.steer(flock_direction, MAX_FORCE * agent.oblivionFactor());
+    agent.steer(flock_direction, MAX_FORCE * agent.willStrength());
   }
 
   centerOfFlock(flock_mates) {
@@ -185,7 +194,7 @@ class Flock {
     let steering = agent.getSteering(direction, MAX_SPEED, MAX_FORCE)
     let course = agent.predict_position(this.canvas, agent.speed.add(steering), MAX_SPEED);
     if (this.agentCollisions(agent, course).length === 0) {
-      agent.steer(direction, MAX_FORCE * agent.oblivionFactor());
+      agent.steer(direction, MAX_FORCE * agent.willStrength());
     }
   }
 
@@ -229,7 +238,8 @@ class Flock {
       "timestep", this.agents[0].timestep,
       "teaching interval", this.agents[0].TEACHING_TIME,
       "oblivion", this.agents[0].oblivionFactor(),
-      "halftime interval", this.agents[0].HALFTIME
+      "halftime interval", this.agents[0].HALFTIME,
+      "will strength", this.agents[0].willStrength()
     );
   }
 }

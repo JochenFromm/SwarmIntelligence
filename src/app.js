@@ -8,8 +8,8 @@ document.onkeypress = function (e) {
     }
 };
 
-var initCanvas = (agents, obstacles, halftime, teaching_time) => {
-  window.flock = new Flock("canvas", agents, obstacles, halftime, teaching_time);
+var initCanvas = (agents, obstacles, halftime, teaching_time, fear) => {
+  window.flock = new Flock("canvas", agents, obstacles, halftime, teaching_time, fear);
   setInterval(window.flock.tick.bind(window.flock), 50);
 }
 
@@ -35,4 +35,17 @@ var setTeachingTime = (value) => {
   window.flock.setTeachingTime(value);
 }
 
-export { initCanvas, setAgents, setObstacles, setHalftime, setTeachingTime };
+var setFear = (value) => {
+  console.log("setFear", value);
+  window.flock.reset();
+  window.flock.setFearfulness(value);
+}
+
+export {
+  initCanvas,
+  setAgents,
+  setObstacles,
+  setHalftime,
+  setTeachingTime,
+  setFear
+};

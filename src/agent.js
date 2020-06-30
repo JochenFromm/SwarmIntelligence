@@ -11,6 +11,7 @@ class Agent {
 
     this.HALFTIME = 140;
     this.TEACHING_TIME = 70;
+    this.FEARFULNESS = 100;
 
     this.SIZE = 2;
     this.PERSONAL_SPACE = 20;
@@ -35,6 +36,22 @@ class Agent {
     return result;
   }
 
+  willStrength() {
+    return this.fearFactor() * this.oblivionFactor();
+  }
+
+  /*
+   * fearfulness factor that ranges
+   * from 1 (100% fear) to 0 (no fear)
+   */
+  fearFactor() {
+     return this.FEARFULNESS / 100;
+  }
+
+  /*
+   * forgetfulness factor that ranges
+   * from 1 (full memory) to 0 (total memory loss)
+   */
   oblivionFactor() {
     return Math.pow(2, - this.timestep / this.HALFTIME);
   }
