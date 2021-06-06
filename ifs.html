@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>IFS</title>
+    <script src="ifs.js"></script>
+    <link rel="stylesheet" type="text/css" href="ifs.css">
+  </head>
+  <body onload="initCanvas(20,50,450,450)">
+    <div class="controlPanel">
+      <br />
+      <select onChange="loadParams(this)">
+        <option value="1">IFS 1</option>
+        <option value="2">IFS 2</option>
+        <option value="3">IFS 3</option>
+        <option value="4">IFS 4</option>
+        <option value="5">IFS 5</option>
+        <option value="6">IFS 6</option>
+        <option value="7">IFS 7</option>
+        <option value="8">IFS 8</option>
+        <option value="9">IFS 9</option>
+        <option value="10">IFS 10</option>
+        <option value="11">IFS 11</option>
+      </select>
+      <br /><br />
+    </div>
+
+    <div class="controlPanel">
+      <input type="range" id=Slider1 min="-500" max="500" value=500 onInput="setParam1(this.value);" class="slider" >
+      <br /> 1 <span id="a1"></span>
+    </div>
+    <div class="controlPanel">
+      <input type="range" id=Slider2 min="-500" max="500" value=0 onInput="setParam2(this.value);" class="slider" >
+      <br /> 2 <span id="a2"></span>
+    </div>
+    <div class="controlPanel">
+      <input type="range" id=Slider3 min="-500" max="500" step=1 value=0 onInput="setParam3(this.value);" class="slider" >
+      <br /> 3 <span id="a3"></span>
+    </div>
+    <div class="controlPanel">
+      <input type="range" id=Slider4 min="-500" max="500" step=1 value=0 onInput="setParam4(this.value);" class="slider" >
+      <br /> 4 <span id="a4"></span>
+    </div>
+    <div class="controlPanel">
+      <input type="range" id=Slider5 min="-500" max="500" step=1 value=500 onInput="setParam5(this.value);" class="slider" >
+      <br /> 5 <span id="a5"></span>
+    </div>
+    <div class="controlPanel">
+      <br>
+    </div>
+    <div class="controlPanel">
+      <input type="range" id=Slider6 min="-500" max="500" step=1 value=0 onInput="setParam6(this.value);" class="slider" >
+      <br /> 6 <span id="a6"></span>
+    </div>
+    <div class="controlPanel">
+      <input type="range" id=Slider7 min="-500" max="500" step=1 value=0 onInput="setParam7(this.value);" class="slider" >
+      <br /> 7 <span id="a7"></span>
+    </div>
+    <div class="controlPanel">
+      <input type="range" id=Slider8 min="-500" max="500" step=1 value=0 onInput="setParam8(this.value);" class="slider" >
+      <br /> 8 <span id="a8"></span>
+    </div>
+    <div class="controlPanel">
+      <input type="range" id=Slider9 min="-500" max="500" step=1 value=0 onInput="setParam9(this.value);" class="slider" >
+      <br /> 9 <span id="a9"></span>
+    </div>
+    <div class="controlPanel">
+      <input type="range" id=Slider10 min="-500" max="500" step=1 value=0 onInput="setParam10(this.value);" class="slider" >
+      <br /> 10 <span id="a10"></span>
+    </div>
+    <div class="controlPanel">
+      <br />
+      <a href="#" id="downloader" onclick="downloadImg()" download="ifs.png">Download</a>
+    </div>
+
+    <canvas id="canvas""></canvas>
+  </body>
+</html>
