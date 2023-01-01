@@ -4,11 +4,11 @@
   "description": "Swarm intelligence examples in Javascript",
   "main": "webpack.config.js",
   "dependencies": {
-    "webpack": "^4.39.1"
+    "webpack": "^5.75.0"
   },
   "devDependencies": {
     "gh-pages": "^3.0.0",
-    "webpack-cli": "^3.3.6"
+    "webpack-cli": "^5.0.1"
   },
   "scripts": {
     "start": "npm run webpack",
